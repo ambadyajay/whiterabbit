@@ -20,7 +20,7 @@ import AppColor from '../../constents/AppColor'
 import { HOST, GET_EMPLOYE } from '../../common/Endpoints'
 
 // realmschema
-import EmployeSchema from '../../common/EmployeSchema';
+import { EmployeSchema, addressSchema, comapnySchema } from '../../components/EmployeSchema';
 
 // dimension
 const { width } = Dimensions.get('window');
@@ -36,7 +36,7 @@ const EmployeList = ({ navigation }) => {
 
     useEffect(() => {
         getEmployeList();
-        // fetchEmployeData()
+        fetchEmployeData()
     }, [])
 
     const getEmployeList = () => {
@@ -48,28 +48,43 @@ const EmployeList = ({ navigation }) => {
         });
     }
 
-    // const fetchEmployeData = () => {
-    //     Realm.open({schema: [EmployeSchema]}).then(async (realm) => {
-    //       const employes = await realm.objects('Employe');
-    //       console.log("emp ",employes);
-    //     });
-    //   };
+    const fetchEmployeData = () => {
+        Realm.open({ schema: [EmployeSchema, addressSchema, comapnySchema] }).then(async (realm) => {
+            const employes = await realm.objects('Employe');
+            console.log("emptest ", JSON.stringify(employes));
+        });
+    };
 
 
-    // const saveDataToDB = (resp) => {
-    //     Realm.open({ schema: [EmployeSchema] })
-    //         .then((realm) => {
-    //             realm.write(async () => {
-    //                 const employes = await realm.create('Employe', {
-    //                     id: 1,
-    //                     data: resp
-    //                 })
-    //                 console.log("emp ", employes);
-    //             })
-    //         });
-    // }
-
-
+    const saveDataToDB = (resp) => {
+        Realm.open({ schema: [EmployeSchema, addressSchema, comapnySchema] })
+            .then(async (realm) => {
+                realm.write(async () => {
+                    resp.map(item => {
+                        realm.create('Employe', {
+                            id: item.id,
+                            name: item.name,
+                            username: item.username,
+                            email: item.email,
+                            profile_image: item.profile_image === null ? '' : item.profile_image,
+                            phone: item.phone === null ? '' : item.phone,
+                            website: item.website === null ? '' : item.website,
+                            address: {
+                                street: item.address.street,
+                                suite: item.address.suite,
+                                city: item.address.city,
+                                zipcode: item.address.zipcode
+                            },
+                            company: {
+                                name: !item.company ? '' : item.company.name,
+                                catchPhrase: !item.company ? '' : item.company.catchPhrase,
+                                bs: !item.company ? '' : item.company.bs
+                            }
+                        })
+                    })
+                })
+            });
+    }
 
 
     const renderIcon = (props) => (
