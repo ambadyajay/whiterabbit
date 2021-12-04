@@ -10,14 +10,9 @@ import {
 } from '@ui-kitten/components';
 import Realm from "realm";
 
-// api
-import API from '../../common/Api'
 
 // color
 import AppColor from '../../constents/AppColor'
-
-// endpoints
-import { HOST, GET_EMPLOYE } from '../../common/Endpoints'
 
 // realmschema
 import { EmployeSchema, addressSchema, comapnySchema } from '../../components/EmployeSchema';
@@ -27,7 +22,6 @@ const { width } = Dimensions.get('window');
 
 const user = require('../../assets/user.jpg')
 
-
 const EmployeList = ({ navigation }) => {
     const theme = useTheme();
     const [value, setValue] = useState('');
@@ -35,56 +29,17 @@ const EmployeList = ({ navigation }) => {
     const [searchData, setSarchData] = useState([]);
 
     useEffect(() => {
-        getEmployeList();
         fetchEmployeData()
     }, [])
 
-    const getEmployeList = () => {
-        const url = `${HOST}/${GET_EMPLOYE}`
-        API('get', url).then(resp => {
-            setData(resp)
-            setSarchData(resp)
-            // saveDataToDB(resp)
-        });
-    }
 
     const fetchEmployeData = () => {
         Realm.open({ schema: [EmployeSchema, addressSchema, comapnySchema] }).then(async (realm) => {
             const employes = await realm.objects('Employe');
-            console.log("emptest ", JSON.stringify(employes));
+            setData(employes)
+            setSarchData(employes)
         });
     };
-
-
-    const saveDataToDB = (resp) => {
-        Realm.open({ schema: [EmployeSchema, addressSchema, comapnySchema] })
-            .then(async (realm) => {
-                realm.write(async () => {
-                    resp.map(item => {
-                        realm.create('Employe', {
-                            id: item.id,
-                            name: item.name,
-                            username: item.username,
-                            email: item.email,
-                            profile_image: item.profile_image === null ? '' : item.profile_image,
-                            phone: item.phone === null ? '' : item.phone,
-                            website: item.website === null ? '' : item.website,
-                            address: {
-                                street: item.address.street,
-                                suite: item.address.suite,
-                                city: item.address.city,
-                                zipcode: item.address.zipcode
-                            },
-                            company: {
-                                name: !item.company ? '' : item.company.name,
-                                catchPhrase: !item.company ? '' : item.company.catchPhrase,
-                                bs: !item.company ? '' : item.company.bs
-                            }
-                        })
-                    })
-                })
-            });
-    }
 
 
     const renderIcon = (props) => (
@@ -109,8 +64,8 @@ const EmployeList = ({ navigation }) => {
         })} activeOpacity={.86}>
             <Layout style={styles.employeCard}>
                 <Layout style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Image defaultSource={require('../../assets/user.jpg')}
-                        source={!item.profile_image ? require('../../assets/user.jpg') : { uri: item.profile_image }}
+                    <Image defaultSource={user}
+                        source={!item.profile_image ? user : { uri: item.profile_image }}
                         style={styles.profileImage} />
                 </Layout>
                 <Layout style={{ marginLeft: 20 }}>

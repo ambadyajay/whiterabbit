@@ -8,6 +8,7 @@ import AppColor from '../constents/AppColor';
 // screens
 import EmployeList from '../screens/employeList/EmployeList';
 import EmployeDetails from '../screens/employeDetails/EmployeDetails';
+import Landing from '../screens/landing/Landing';
 
 const defaultNavOptions = {
     headerStyle: {
@@ -29,6 +30,7 @@ const AppStackNavigator = createNativeStackNavigator();
 export const AppNavigator = () => {
     return (
         <AppStackNavigator.Navigator screenOptions={defaultNavOptions}>
+        <AppStackNavigator.Screen name="Landing" component={Landing} />
         <AppStackNavigator.Screen name="EmployeList" component={EmployeList} />
         <AppStackNavigator.Screen name="EmployeDetails" component={EmployeDetails} />
         </AppStackNavigator.Navigator>
