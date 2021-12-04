@@ -42,8 +42,8 @@ const EmployeList = ({ navigation }) => {
     const getEmployeList = () => {
         const url = `${HOST}/${GET_EMPLOYE}`
         API('get', url).then(resp => {
-            // setData(resp)
-            // setSarchData(resp)
+            setData(resp)
+            setSarchData(resp)
             // saveDataToDB(resp)
         });
     }
