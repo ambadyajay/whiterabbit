@@ -31,7 +31,6 @@ const Landing = ({ navigation }) => {
         const url = `${HOST}/${GET_EMPLOYE}`
 
         const value = await AsyncStorage.getItem('isDataLoaded');
-        console.log(value);
         if (value === 'true') {
             navigation.navigate('EmployeList')
         }
